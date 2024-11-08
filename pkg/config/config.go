@@ -32,11 +32,12 @@ type PushGatewayCfg struct {
 	PushPeriod     time.Duration
 }
 
+// Config holds the configuration parameters for setting up metrics reporting, including port details, environment settings, meter provider types, push gateway configurations, histogram boundaries, base tags for metrics, and optional log output functions.
 type Config struct {
-	PrometheusPort      int
+	ReportMetricPort    int
+	LocalIP             string
 	Env                 MeterEnv
 	MeterProvider       MeterProviderType
-	LocalIP             string
 	PushGateway         *PushGatewayCfg
 	HistogramBoundaries []float64
 	BaseTags            map[string]string
@@ -80,7 +81,10 @@ func (c *Config) WriteInfoOrNot(s string) {
 	}
 }
 
-func (c *Config) WithAttributes() []attribute.KeyValue {
+// WithBaseTags creates a slice of attribute.KeyValue from the BaseTags map in the Config.
+// Each key-value pair in the BaseTags map is converted into an attribute.KeyValue.
+// This function is useful for populating common tags across metrics or traces.
+func (c *Config) WithBaseTags() []attribute.KeyValue {
 	var attributes []attribute.KeyValue
 	for key, value := range c.BaseTags {
 		attributes = append(attributes, attribute.String(key, value))
@@ -88,6 +92,7 @@ func (c *Config) WithAttributes() []attribute.KeyValue {
 	return attributes
 }
 
+// IsDev returns true if the configuration's environment is set to development (`MeterEnvDev`).
 func (c *Config) IsDev() bool {
 	return c.Env == MeterEnvDev
 }

@@ -42,7 +42,7 @@ func NewPrometheusMeter(cfg *config.Config) (interfaces.Meter, error) {
 		return nil, err
 	}
 
-	resource, err := ResourceWithAttr(cfg.WithAttributes())
+	resource, err := ResourceWithAttr(cfg.WithBaseTags())
 	if err != nil {
 		cfg.WriteErrorOrNot("failed to create resource: " + err.Error())
 		return nil, err

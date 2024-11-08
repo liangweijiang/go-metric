@@ -7,6 +7,11 @@ import (
 	"github.com/liangweijiang/go-metric/pkg/interfaces"
 )
 
+// NewMeter creates a new meter instance based on the provided options and configuration.
+// It allows customization through options which modify the configuration before deciding the meter provider.
+// In a development environment, it returns a no-op meter. For Prometheus configuration, it initializes a Prometheus meter.
+// Otherwise, it defaults to a no-op meter.
+// Returns a meter implementation and an error if one occurs during initialization.
 func NewMeter(options ...interfaces.Option) (interfaces.Meter, error) {
 	cfg := config.GetConfig()
 	for _, option := range options {
