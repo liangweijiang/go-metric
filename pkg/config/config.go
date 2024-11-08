@@ -6,6 +6,27 @@ import (
 	"time"
 )
 
+// MeterEnv represents an enumeration of environments for metering purposes, such as "production", "test", or "dev".
+type MeterEnv string
+
+const (
+
+	// MeterEnvProduct represents the production environment for metering.
+	MeterEnvProduct MeterEnv = "production"
+
+	// MeterEnvTest represents the test environment for metering.
+	MeterEnvTest MeterEnv = "test"
+
+	// MeterEnvDev represents the development environment for metering. Create nop meter.
+	MeterEnvDev MeterEnv = "dev"
+)
+
+type MeterProviderType int
+
+const (
+	MeterProviderTypePrometheus MeterProviderType = iota + 1
+)
+
 type PushGatewayCfg struct {
 	GatewayAddress string
 	PushPeriod     time.Duration
@@ -13,12 +34,18 @@ type PushGatewayCfg struct {
 
 type Config struct {
 	PrometheusPort      int
+	Env                 MeterEnv
+	MeterProvider       MeterProviderType
 	LocalIP             string
 	PushGateway         *PushGatewayCfg
 	HistogramBoundaries []float64
 	BaseTags            map[string]string
 	InfoLogWrite        func(s string)
 	ErrorLogWrite       func(s string)
+}
+
+func GetConfig() *Config {
+	return new(Config)
 }
 
 // WriteErrorOrNot logs an error message either to a custom error log function defined in Config or to stdout if not set.
@@ -29,11 +56,11 @@ type Config struct {
 //
 // Returns:
 // None
-func (cfg *Config) WriteErrorOrNot(s string) {
-	if cfg.ErrorLogWrite == nil {
+func (c *Config) WriteErrorOrNot(s string) {
+	if c.ErrorLogWrite == nil {
 		_, _ = os.Stdout.WriteString("[go-metrics][error]: " + s + "\n")
 	} else {
-		cfg.ErrorLogWrite("[go-metrics] " + s)
+		c.ErrorLogWrite("[go-metrics] " + s)
 	}
 }
 
@@ -45,18 +72,22 @@ func (cfg *Config) WriteErrorOrNot(s string) {
 //
 // Returns:
 // None
-func (cfg *Config) WriteInfoOrNot(s string) {
-	if cfg.InfoLogWrite == nil {
+func (c *Config) WriteInfoOrNot(s string) {
+	if c.InfoLogWrite == nil {
 		_, _ = os.Stdout.WriteString("[go-metrics][error]: " + s + "\n")
 	} else {
-		cfg.InfoLogWrite("[go-metrics] " + s)
+		c.InfoLogWrite("[go-metrics] " + s)
 	}
 }
 
-func (cfg *Config) WithAttributes() []attribute.KeyValue {
+func (c *Config) WithAttributes() []attribute.KeyValue {
 	var attributes []attribute.KeyValue
-	for key, value := range cfg.BaseTags {
+	for key, value := range c.BaseTags {
 		attributes = append(attributes, attribute.String(key, value))
 	}
 	return attributes
+}
+
+func (c *Config) IsDev() bool {
+	return c.Env == MeterEnvDev
 }

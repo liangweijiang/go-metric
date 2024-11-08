@@ -6,7 +6,6 @@ import (
 	"go-mertric/internal/meter/prom/server"
 	"go-mertric/internal/metrics/nop"
 	"go-mertric/internal/metrics/prom"
-	"go-mertric/pkg/common/constant"
 	"go-mertric/pkg/config"
 	"go-mertric/pkg/interfaces"
 	"go.opentelemetry.io/otel/exporters/prometheus"
@@ -14,6 +13,11 @@ import (
 	"go.opentelemetry.io/otel/sdk/metric"
 	"net/http"
 	"sync/atomic"
+)
+
+const (
+	sdkVersion          = "1.0"
+	prometheusMeterName = "go-metrics/prometheus-meter"
 )
 
 // PrometheusMeter 基于prometheus 度量器
@@ -27,7 +31,7 @@ type PrometheusMeter struct {
 	handler http.Handler
 }
 
-func NewPrometheusMeter(cfg *config.Config) (*PrometheusMeter, error) {
+func NewPrometheusMeter(cfg *config.Config) (interfaces.Meter, error) {
 	registry := cliprom.NewRegistry()
 	exporter, err := prometheus.New(
 		prometheus.WithRegisterer(registry),
@@ -60,7 +64,7 @@ func NewPrometheusMeter(cfg *config.Config) (*PrometheusMeter, error) {
 		),
 	)
 
-	meter := provider.Meter(constant.PrometheusMeterName, api.WithInstrumentationVersion(constant.SdkVersion), api.WithInstrumentationAttributes())
+	meter := provider.Meter(prometheusMeterName, api.WithInstrumentationVersion(sdkVersion), api.WithInstrumentationAttributes())
 	handler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
 	promMeter := &PrometheusMeter{
 		cfg:     cfg,
