@@ -1,8 +1,8 @@
 package global
 
 import (
-	"go-mertric/internal/meter/nop"
-	"go-mertric/pkg/interfaces"
+	"github.com/liangweijiang/go-metric/internal/meter/nop"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 	"sync/atomic"
 )
 

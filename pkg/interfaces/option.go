@@ -1,6 +1,6 @@
 package interfaces
 
-import "go-mertric/pkg/config"
+import "github.com/liangweijiang/go-metric/pkg/config"
 
 type Option interface {
 	ApplyConfig(cfg *config.Config)

@@ -1,10 +1,10 @@
 package sdk
 
 import (
-	"go-mertric/internal/meter/nop"
-	"go-mertric/internal/meter/prom"
-	"go-mertric/pkg/config"
-	"go-mertric/pkg/interfaces"
+	"github.com/liangweijiang/go-metric/internal/meter/nop"
+	"github.com/liangweijiang/go-metric/internal/meter/prom"
+	"github.com/liangweijiang/go-metric/pkg/config"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 )
 
 func NewMeter(options ...interfaces.Option) (interfaces.Meter, error) {

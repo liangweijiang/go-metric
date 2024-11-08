@@ -2,7 +2,7 @@ package prom
 
 import (
 	"context"
-	"go-mertric/pkg/interfaces"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 	"go.opentelemetry.io/otel/metric"
 	"time"
 )

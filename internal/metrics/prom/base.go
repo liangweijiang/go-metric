@@ -1,7 +1,7 @@
 package prom
 
 import (
-	"go-mertric/internal/tag"
+	"github.com/liangweijiang/go-metric/internal/tag"
 	"go.opentelemetry.io/otel/attribute"
 	"sync/atomic"
 )

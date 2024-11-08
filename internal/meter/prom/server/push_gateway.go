@@ -2,10 +2,10 @@ package server
 
 import (
 	"fmt"
+	"github.com/liangweijiang/go-metric/pkg/config"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/push"
-	"go-mertric/pkg/config"
-	"go-mertric/pkg/interfaces"
 	"sync/atomic"
 	"time"
 )

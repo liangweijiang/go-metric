@@ -1,13 +1,13 @@
 package prom
 
 import (
+	"github.com/liangweijiang/go-metric/internal/meter/prom/server"
+	"github.com/liangweijiang/go-metric/internal/metrics/nop"
+	"github.com/liangweijiang/go-metric/internal/metrics/prom"
+	"github.com/liangweijiang/go-metric/pkg/config"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 	cliprom "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"go-mertric/internal/meter/prom/server"
-	"go-mertric/internal/metrics/nop"
-	"go-mertric/internal/metrics/prom"
-	"go-mertric/pkg/config"
-	"go-mertric/pkg/interfaces"
 	"go.opentelemetry.io/otel/exporters/prometheus"
 	api "go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/sdk/metric"

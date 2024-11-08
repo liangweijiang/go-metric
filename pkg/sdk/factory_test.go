@@ -1,13 +1,13 @@
 package sdk
 
 import (
-	"go-mertric/pkg/interfaces"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 	"testing"
 
+	"github.com/liangweijiang/go-metric/internal/meter/nop"
+	"github.com/liangweijiang/go-metric/internal/meter/prom"
+	"github.com/liangweijiang/go-metric/pkg/config"
 	"github.com/stretchr/testify/assert"
-	"go-mertric/internal/meter/nop"
-	"go-mertric/internal/meter/prom"
-	"go-mertric/pkg/config"
 )
 
 func TestNewMeter(t *testing.T) {
