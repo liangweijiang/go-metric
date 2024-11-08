@@ -2,7 +2,7 @@ package nop
 
 import (
 	"context"
-	"go-mertric/pkg/interfaces"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 )
 
 // _ is a blank identifier assignment to assert that (*nopUpDownCounter)(nil) implements the interfaces.UpDownCounter interface.

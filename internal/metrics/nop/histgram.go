@@ -2,7 +2,7 @@ package nop
 
 import (
 	"context"
-	"go-mertric/pkg/interfaces"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 	"time"
 )
 

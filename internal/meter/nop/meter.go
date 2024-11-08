@@ -1,8 +1,8 @@
 package nop
 
 import (
-	"go-mertric/internal/metrics/nop"
-	"go-mertric/pkg/interfaces"
+	"github.com/liangweijiang/go-metric/internal/metrics/nop"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 	"net/http"
 )
 

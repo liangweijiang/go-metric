@@ -2,7 +2,7 @@ package nop
 
 import (
 	"context"
-	"go-mertric/pkg/interfaces"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 )
 
 // _ is a blank identifier used for type assertion to ensure that nopCounter satisfies the interfaces.Counter interface requirements.

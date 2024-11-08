@@ -1,8 +1,8 @@
 package sdk
 
 import (
-	"go-mertric/internal/global"
-	"go-mertric/pkg/interfaces"
+	"github.com/liangweijiang/go-metric/internal/global"
+	"github.com/liangweijiang/go-metric/pkg/interfaces"
 )
 
 // GetGlobalMeter retrieves the globally configured instance of interfaces.Meter, enabling creation of metric instruments and management of observability features across the application.
