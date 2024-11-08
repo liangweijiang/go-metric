@@ -1,4 +1,4 @@
-module github.com/liang-wj/go-mertric
+module github.com/liangweijiang/go-mertric
 
 go 1.23.2
 
