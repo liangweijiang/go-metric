@@ -15,12 +15,16 @@ import (
 	"sync/atomic"
 )
 
+// sdkVersion denotes the current version of the SDK.
+// prometheusMeterName is the metric name used for Prometheus instrumentation.
 const (
 	sdkVersion          = "1.0"
 	prometheusMeterName = "go-metrics/prometheus-meter"
 )
 
-// PrometheusMeter 基于prometheus 度量器
+// PrometheusMeter is a struct that encapsulates the configuration and runtime state for a Prometheus-based metrics system.
+// It includes channels to manage the running state, references to meter servers, and an HTTP handler for exposing metrics.
+// The struct utilizes a provided configuration to initialize and manage Prometheus metrics collection.
 type PrometheusMeter struct {
 	cfg     *config.Config
 	running int32
@@ -31,6 +35,18 @@ type PrometheusMeter struct {
 	handler http.Handler
 }
 
+// NewPrometheusMeter initializes and configures a Prometheus-based meter provider
+// using the provided configuration. It sets up a meter with explicit bucket
+// histograms for instrument kind Histogram as defined in the config, along with
+// a Prometheus exporter and HTTP handler. Optionally, it can also configure a
+// PushGateway server based on the config settings.
+//
+// Parameters:
+//   - cfg (*config.Config): Configuration object for meter setup.
+//
+// Returns:
+//   - interfaces.Meter: An instance of PrometheusMeter ready to record metrics.
+//   - error: If there's an error during initialization, such as failed exporter creation or resource setup.
 func NewPrometheusMeter(cfg *config.Config) (interfaces.Meter, error) {
 	registry := cliprom.NewRegistry()
 	exporter, err := prometheus.New(
@@ -80,10 +96,15 @@ func NewPrometheusMeter(cfg *config.Config) (interfaces.Meter, error) {
 	return promMeter, nil
 }
 
+// GetHandler returns the HTTP handler for serving Prometheus metrics exposed by the PrometheusMeter.
 func (p *PrometheusMeter) GetHandler() http.Handler {
 	return p.handler
 }
 
+// WithRunning sets the running state of the PrometheusMeter.
+// If 'on' is true, it sends a signal on the 'onCh' channel.
+// If 'on' is false, it sends a signal on the 'offCh' channel.
+// Channels are used with a non-blocking send to avoid potential blocking if the channels are full.
 func (p *PrometheusMeter) WithRunning(on bool) {
 	if on {
 		select {
@@ -100,6 +121,15 @@ func (p *PrometheusMeter) WithRunning(on bool) {
 	}
 }
 
+// NewCounter creates a new Counter metric if the PrometheusMeter is running.
+// It requires the metric name, description, and unit as parameters.
+// Returns a no-op Counter if the meter is not active.
+// Parameters:
+// metricName (string): The name of the counter metric.
+// desc (string): Description for the counter metric.
+// unit (string): The unit of measurement for the counter.
+// Returns:
+// interfaces.Counter: An interface representing the counter metric.
 func (p *PrometheusMeter) NewCounter(metricName, desc, unit string) interfaces.Counter {
 	if !p.isRunning() {
 		return nop.Counter
@@ -116,6 +146,9 @@ func (p *PrometheusMeter) NewCounter(metricName, desc, unit string) interfaces.C
 	return prom.NewCounter(metricName, counter)
 }
 
+// NewUpDownCounter creates a new UpDownCounter metric if the PrometheusMeter is running.
+// It requires metricName, description, and unit as parameters to define the metric.
+// Returns an interfaces.UpDownCounter or a no-op counter if the meter is not running.
 func (p *PrometheusMeter) NewUpDownCounter(metricName, desc, unit string) interfaces.UpDownCounter {
 	if !p.isRunning() {
 		return nop.UpDownCounter
@@ -131,6 +164,9 @@ func (p *PrometheusMeter) NewUpDownCounter(metricName, desc, unit string) interf
 	return prom.NewUpDownCounter(metricName, udCounter)
 }
 
+// NewGauge creates a new Gauge metric if the PrometheusMeter is running.
+// It takes the metric name, description, and unit as input parameters and returns an interfaces.Gauge.
+// If the meter is not running, it returns a no-op Gauge.
 func (p *PrometheusMeter) NewGauge(metricName, desc, unit string) interfaces.Gauge {
 	if !p.isRunning() {
 		return nop.Gauge
@@ -145,6 +181,9 @@ func (p *PrometheusMeter) NewGauge(metricName, desc, unit string) interfaces.Gau
 	return prom.NewGauge(metricName, gauge)
 }
 
+// NewHistogram creates a new Histogram metric if the PrometheusMeter is running.
+// It takes the metric name, description, and unit as input parameters and returns an interfaces.Histogram.
+// If the meter is not running, it returns a no-op Histogram.
 func (p *PrometheusMeter) NewHistogram(metricName, desc, unit string) interfaces.Histogram {
 	if !p.isRunning() {
 		return nop.Histogram
@@ -159,6 +198,9 @@ func (p *PrometheusMeter) NewHistogram(metricName, desc, unit string) interfaces
 	return prom.NewHistogram(metricName, histogram)
 }
 
+// isRunning checks if the PrometheusMeter is currently running.
+// It reads the atomic 'running' flag to determine the state.
+// Returns true if the meter is running, false otherwise.
 func (p *PrometheusMeter) isRunning() bool {
 	return atomic.LoadInt32(&p.running) == 1
 }

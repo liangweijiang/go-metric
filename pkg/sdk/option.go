@@ -75,6 +75,19 @@ func (m *meterProviderOption) ApplyConfig(cfg *config.Config) {
 	cfg.MeterProvider = m.providerType
 }
 
+// WithProviderType returns an Option that sets the meter provider type in a Config.
+// It wraps the specified providerType within a meterProviderOption which implements the Option interface.
+// The ApplyConfig method of this option updates the MeterProvider field of a config.Config instance.
+// Parameters:
+// providerType (config.MeterProviderType): The type of meter provider to configure.
+// Returns:
+// interfaces.Option: An Option to apply the meter provider type to a config.Config during setup.
+func WithProviderType(providerType config.MeterProviderType) interfaces.Option {
+	return &meterProviderOption{
+		providerType: providerType,
+	}
+}
+
 // baseTagsOption holds a set of base tags to be applied to configurations.
 type baseTagsOption struct {
 	baseTags map[string]string
