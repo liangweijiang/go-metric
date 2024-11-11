@@ -190,7 +190,8 @@ func (p *PrometheusMeter) NewHistogram(metricName, desc, unit string) interfaces
 	}
 	histogram, err := p.meter.Float64Histogram(metricName,
 		api.WithDescription(desc),
-		api.WithUnit(unit))
+		api.WithUnit(unit),
+		api.WithExplicitBucketBoundaries())
 	if err != nil {
 		p.cfg.WriteInfoOrNot("failed to create prometheus histogram: " + err.Error())
 		return nop.Histogram
