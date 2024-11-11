@@ -1,4 +1,4 @@
-package sdk
+package meter
 
 import (
 	"github.com/liangweijiang/go-metric/internal/global"
