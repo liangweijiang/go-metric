@@ -34,15 +34,16 @@ type PushGatewayCfg struct {
 
 // Config holds the configuration parameters for setting up metrics reporting, including port details, environment settings, meter provider types, push gateway configurations, histogram boundaries, base tags for metrics, and optional log output functions.
 type Config struct {
-	ReportMetricPort    int
-	LocalIP             string
-	Env                 MeterEnv
-	MeterProvider       MeterProviderType
-	PushGateway         *PushGatewayCfg
-	HistogramBoundaries []float64
-	BaseTags            map[string]string
-	InfoLogWrite        func(s string)
-	ErrorLogWrite       func(s string)
+	PrometheusPort        int
+	LocalIP               string
+	Env                   MeterEnv
+	MeterProvider         MeterProviderType
+	PushGateway           *PushGatewayCfg
+	RuntimeMetricsCollect bool
+	HistogramBoundaries   []float64
+	BaseTags              map[string]string
+	InfoLogWrite          func(s string)
+	ErrorLogWrite         func(s string)
 }
 
 func GetConfig() *Config {
@@ -75,7 +76,7 @@ func (c *Config) WriteErrorOrNot(s string) {
 // None
 func (c *Config) WriteInfoOrNot(s string) {
 	if c.InfoLogWrite == nil {
-		_, _ = os.Stdout.WriteString("[go-metrics][error]: " + s + "\n")
+		_, _ = os.Stdout.WriteString("[go-metrics][info]: " + s + "\n")
 	} else {
 		c.InfoLogWrite("[go-metrics] " + s)
 	}
