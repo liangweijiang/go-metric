@@ -1,3 +1,4 @@
+// Package meter provides functionalities for measuring and tracking metrics.
 package meter
 
 import (

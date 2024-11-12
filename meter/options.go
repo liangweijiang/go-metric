@@ -23,39 +23,19 @@ func WithEnv(env config.MeterEnv) interfaces.Option {
 	}
 }
 
-// reportMetricOption defines a configuration option for reporting metrics with a specific local IP address and port.
-type reportMetricOption struct {
-	localIp string
-	port    int
+// prometheusPortOption configures the Prometheus metrics server port. It implements the interfaces.Option interface to apply the port setting to the config.Config structure.
+type prometheusPortOption struct {
+	port int
 }
 
-// ApplyConfig applies the report metric option settings to the provided configuration.
-// It sets the ReportMetricPort and LocalIP fields of the given config.Config instance.
-// Parameters:
-//   - cfg: Pointer to the config.Config to be updated with report metric options.
-//
-// Returns:
-//
-//	None
-func (p *reportMetricOption) ApplyConfig(cfg *config.Config) {
-	cfg.ReportMetricPort = p.port
-	cfg.LocalIP = p.localIp
+// ApplyConfig sets the PrometheusPort field in the provided config.Config to the port value stored in the prometheusPortOption instance.
+func (p *prometheusPortOption) ApplyConfig(c *config.Config) {
+	c.PrometheusPort = p.port
 }
 
-// WithReportMetric creates an Option to configure the reporting of metrics with a specified local IP and port.
-// This option sets the 'LocalIP' and 'ReportMetricPort' fields in the provided Config.
-// Parameters:
-//
-//	localIp (string): The local IP address to use for metric reporting.
-//	port (int): The network port for metric reporting.
-//
-// Returns:
-//
-//	interfaces.Option: An Option instance to apply the report metric configuration.
-func WithReportMetric(localIp string, port int) interfaces.Option {
-	return &reportMetricOption{
-		localIp: localIp,
-		port:    port,
+func WithPrometheusPort(port int) interfaces.Option {
+	return &prometheusPortOption{
+		port: port,
 	}
 }
 
@@ -207,4 +187,18 @@ func WithErrorLogWrite(logFunc func(s string)) interfaces.Option {
 	return &errorLogOption{
 		errorLogFunc: logFunc,
 	}
+}
+
+// runtimeMetricsOption represents an option to enable the collection of runtime metrics.
+// It implements the interfaces.Option interface to apply configuration changes to a config.Config instance.
+type runtimeMetricsOption struct{}
+
+// ApplyConfig sets the RuntimeMetricsCollect flag to true in the provided config.Config instance.
+func (r *runtimeMetricsOption) ApplyConfig(cfg *config.Config) {
+	cfg.RuntimeMetricsCollect = true
+}
+
+// WithRuntimeMetricsCollector returns an Option that enables collection of runtime metrics when applied to a Config.
+func WithRuntimeMetricsCollector() interfaces.Option {
+	return &runtimeMetricsOption{}
 }
